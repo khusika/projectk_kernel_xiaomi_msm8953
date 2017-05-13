@@ -182,14 +182,23 @@ config CPU_FREQ_DEFAULT_GOV_ALUCARD
 	help
 
 config CPU_FREQ_DEFAULT_GOV_ZZMOOVE
-        bool "zzmoove"
+ bool "zzmoove"
  	select CPU_FREQ_GOV_ZZMOOVE
  	select CPU_FREQ_GOV_PERFORMANCE
  	help
- 	Use the CPUFreq governor 'zzmoove' as default, using predefined
- 	frequency lookup tables and optimized scaling triggers instead of
- 	% frequency steps to get smooth up/downscaling dependant on CPU load.
+	  Use the CPUFreq governor 'zzmoove' as default, using predefined
+	  frequency lookup tables and optimized scaling triggers instead of
+	  % frequency steps to get smooth up/downscaling dependant on CPU load.
 
+config CPU_FREQ_DEFAULT_GOV_ELECTRON
+ bool "electron"
+ select CPU_FREQ_GOV_ELECTRON
+ help
+	  Use the CPUFreq governor 'electron' as default. This allows
+	  you to get a full dynamic cpu frequency capable system by simply
+	  loading your cpufreq low-level hardware driver, using the
+	  'electron' governor for latency-sensitive workloads.
+		
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -394,6 +403,12 @@ config CPU_FREQ_GOV_YANKACTIVE
 	  The governor is based on interactive with just different default settings
 	  and can be achieved using interactive with a script. This is added for
 	  simplification purposes for myself.
+
+config CPU_FREQ_GOV_ELECTRON
+	tristate "'electron' cpufreq governor"
+	depends on CPU_FREQ
+	help
+	  'electron' - another tuned interactive with extra options
 
 comment "CPU frequency scaling drivers"
 

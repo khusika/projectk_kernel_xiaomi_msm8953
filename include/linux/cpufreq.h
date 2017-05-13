@@ -540,6 +540,9 @@ extern struct cpufreq_governor cpufreq_gov_alucard;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_ZZMOOVE)
 extern struct cpufreq_governor cpufreq_gov_zzmoove;
 #define CPUFREQ_DEFAULT_GOVERNOR       (&cpufreq_gov_zzmoove)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_ELECTRON)
+extern struct cpufreq_governor cpufreq_gov_electron;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_electron)
 #endif
 
 /*********************************************************************
