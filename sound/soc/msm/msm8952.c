@@ -112,6 +112,11 @@ static struct wcd_mbhc_config mbhc_cfg = {
 	.key_code[2] = BTN_2,
 	.key_code[3] = 0,
 #else
+#ifdef CONFIG_MACH_XIAOMI_MARKW
+	.key_code[1] = KEY_PREVIOUSSONG_NEW,
+	.key_code[2] = KEY_NEXTSONG_NEW,
+	.key_code[3] = KEY_VOICECOMMAND,
+#else
 	.key_code[1] = KEY_VOICECOMMAND,
 	.key_code[2] = KEY_VOLUMEUP,
 	.key_code[3] = KEY_VOLUMEDOWN,
@@ -1609,7 +1614,7 @@ static void *def_msm8952_wcd_mbhc_cal(void)
 		return NULL;
 
 #define S(X, Y) ((WCD_MBHC_CAL_PLUG_TYPE_PTR(msm8952_wcd_cal)->X) = (Y))
-#if (defined CONFIG_MACH_XIAOMI_MIDO) || (defined CONFIG_MACH_XIAOMI_TISSOT)
+#if (defined CONFIG_MACH_XIAOMI_MIDO) || (defined CONFIG_MACH_XIAOMI_TISSOT) || (defined CONFIG_MACH_XIAOMI_MARKW)
 	S(v_hs_max, 1600);
 #else
 	S(v_hs_max, 1500);
@@ -1659,6 +1664,18 @@ static void *def_msm8952_wcd_mbhc_cal(void)
 	btn_high[3] = 488;
 	btn_low[4] = 488;
 	btn_high[4] = 488;
+#else
+#ifdef CONFIG_MACH_XIAOMI_MARKW
+	btn_low[0] = 25;
+	btn_high[0] = 75;
+	btn_low[1] = 200;
+	btn_high[1] = 225;
+	btn_low[2] = 325;
+	btn_high[2] = 450;
+	btn_low[3] = 500;
+	btn_high[3] = 510;
+	btn_low[4] = 530;
+	btn_high[4] = 540;
 #else
 	btn_low[0] = 75;
 	btn_high[0] = 75;
@@ -3444,6 +3461,9 @@ err:
 		}
 	}
 err1:
+#ifdef CONFIG_MACH_XIAOMI_MARKW
+	snd_soc_card_set_drvdata(card, NULL);
+#endif
 	devm_kfree(&pdev->dev, pdata);
 	return ret;
 }
