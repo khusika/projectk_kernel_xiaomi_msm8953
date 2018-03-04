@@ -243,6 +243,7 @@ ifneq ($(CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE),y)
 # Build non-treble DTB as well
 dtb-$(CONFIG_MACH_XIAOMI_MIDO) += msm8953-qrd-sku3-mido-nontreble.dtb
 dtb-$(CONFIG_MACH_XIAOMI_TISSOT) += msm8953-qrd-sku3-tissot-nontreble.dtb
+dtb-$(CONFIG_MACH_XIAOMI_MARKW) += msm8953-qrd-markw.dtb
 endif
 dtb-$(CONFIG_MACH_XIAOMI_MIDO) += msm8953-qrd-sku3-mido-treble.dtb
 dtb-$(CONFIG_MACH_XIAOMI_TISSOT) += msm8953-qrd-sku3-tissot-treble.dtb
