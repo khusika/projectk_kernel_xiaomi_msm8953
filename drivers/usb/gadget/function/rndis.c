@@ -941,6 +941,7 @@ EXPORT_SYMBOL_GPL(rndis_register);
 void rndis_deregister(int configNr)
 {
 	pr_debug("%s:\n", __func__);
+	BUG_ON(configNr < 0);
 
 	if (configNr >= RNDIS_MAX_CONFIGS) return;
 	rndis_per_dev_params[configNr].used = 0;
@@ -1369,4 +1370,3 @@ void rndis_exit(void)
 	}
 #endif
 }
-
