@@ -2550,7 +2550,7 @@ limDecideStaProtection(tpAniSirGlobal pMac,
         if ( psessionEntry->beaconParams.fRIFSMode !=
                 ( tANI_U8 ) htInfo.rifsMode )
         {
-            pBeaconParams->fRIFSMode =
+            pBeaconParams->fRIFSMode = 
                 psessionEntry->beaconParams.fRIFSMode  =
                 ( tANI_U8 ) htInfo.rifsMode;
             pBeaconParams->paramChangeBitmap |= PARAM_RIFS_MODE_CHANGED;
@@ -2569,7 +2569,7 @@ limDecideStaProtection(tpAniSirGlobal pMac,
         if ( psessionEntry->beaconParams.fLsigTXOPProtectionFullSupport !=
                 ( tANI_U8 )htInfo.lsigTXOPProtectionFullSupport )
         {
-            pBeaconParams->fLsigTXOPProtectionFullSupport =
+            pBeaconParams->fLsigTXOPProtectionFullSupport = 
                 psessionEntry->beaconParams.fLsigTXOPProtectionFullSupport =
                 ( tANI_U8 )htInfo.lsigTXOPProtectionFullSupport;
             pBeaconParams->paramChangeBitmap |=
@@ -3483,7 +3483,7 @@ void limSwitchChannelCback(tpAniSirGlobal pMac, eHalStatus status,
    tSirSmeSwitchChannelInd *pSirSmeSwitchChInd;
 
    psessionEntry->currentOperChannel = psessionEntry->currentReqChannel;
-
+   
    /* We need to restore pre-channelSwitch state on the STA */
    if (limRestorePreChannelSwitchState(pMac, psessionEntry) != eSIR_SUCCESS)
    {
@@ -4084,7 +4084,7 @@ limEnable11aProtection(tpAniSirGlobal pMac, tANI_U8 enable,
                     pMac->lim.gHTOperMode = eSIR_HT_OP_MODE_MIXED;
                     psessionEntry->htOperMode = eSIR_HT_OP_MODE_MIXED;
                     limEnableHtRifsProtection(pMac, true, overlap, pBeaconParams,psessionEntry);
-                    limEnableHtOBSSProtection(pMac,  true, overlap, pBeaconParams,psessionEntry);
+                    limEnableHtOBSSProtection(pMac,  true, overlap, pBeaconParams,psessionEntry);         
 
                 }
             }
@@ -4792,7 +4792,7 @@ limEnableHtOBSSProtection(tpAniSirGlobal pMac, tANI_U8 enable,
             PELOG1(limLog(pMac, LOG1, FL("=>obss protection enabled"));)
             psessionEntry->beaconParams.gHTObssMode = true;
             pBeaconParams->paramChangeBitmap |= PARAM_OBSS_MODE_CHANGED; // UPDATE AN ENUM FOR OBSS MODE <todo>
-
+        
          }
          else if (!enable && (true == psessionEntry->beaconParams.gHTObssMode))
          {
@@ -6887,7 +6887,7 @@ __limFillTxControlParams(tpAniSirGlobal pMac, tpTxControlParams  pTxCtrlMsg,
         pTxCtrlMsg->stopTx =  eANI_BOOLEAN_TRUE;
     else
         pTxCtrlMsg->stopTx =  eANI_BOOLEAN_FALSE;
-
+    
     switch (type)
     {
         case eLIM_TX_ALL:
@@ -7027,7 +7027,7 @@ limRestorePreChannelSwitchState(tpAniSirGlobal pMac, tpPESession psessionEntry)
     /* Free to enter BMPS */
     limSendSmePostChannelSwitchInd(pMac);
 
-    //Background scan is now enabled by SME
+    //Background scan is now enabled by SME    
     if(pMac->lim.gLimBackgroundScanTerminate == FALSE)
     {
         /* Enable background scan if already enabled, else don't bother */
@@ -7324,8 +7324,8 @@ void limSetTspecUapsdMask(tpAniSirGlobal pMac, tSirMacTSInfo *pTsInfo, tANI_U32 
     {
         if (direction == SIR_MAC_DIRECTION_UPLINK)
             pMac->lim.gUapsdPerAcTriggerEnableMask |= (1 << ac);
-        else if (direction == SIR_MAC_DIRECTION_DNLINK)
-            pMac->lim.gUapsdPerAcDeliveryEnableMask |= (1 << ac);
+        else if (direction == SIR_MAC_DIRECTION_DNLINK)   
+            pMac->lim.gUapsdPerAcDeliveryEnableMask |= (1 << ac);    
         else if (direction == SIR_MAC_DIRECTION_BIDIR)
         {
             pMac->lim.gUapsdPerAcTriggerEnableMask |= (1 << ac);
@@ -7452,7 +7452,7 @@ void limProcessAddStaRsp(tpAniSirGlobal pMac,tpSirMsgQ limMsgQ)
     tpAddStaParams      pAddStaParams;
 
     pAddStaParams = (tpAddStaParams)limMsgQ->bodyptr;
-
+    
     if((psessionEntry = peFindSessionBySessionId(pMac,pAddStaParams->sessionId))==NULL)
     {
         limLog(pMac, LOGP,FL("Session Does not exist for given sessionID"));
@@ -7899,7 +7899,7 @@ v_U8_t limGetNoaAttrStream(tpAniSirGlobal pMac, v_U8_t*pNoaStream,tpPESession ps
             *pBody = psessionEntry->p2pGoPsUpdate.uNoa1IntervalCnt;
             pBody += 1;
             len +=1;
-
+             
             *((tANI_U32 *)(pBody)) = sirSwapU32ifNeeded(psessionEntry->p2pGoPsUpdate.uNoa1Duration);
             pBody   += sizeof(tANI_U32);
             len +=4;
@@ -9044,6 +9044,11 @@ _sap_offload_parse_sta_vht(tpAniSirGlobal pmac,
         tpSirAssocReq assoc_req)
 {
     tpPESession session_entry = limIsApSessionActive(pmac);
+    if (session_entry == NULL)
+    {
+        limLog(pmac, LOGE, FL("Invalid Session Entry"));
+        goto error;
+    }
 
     if (IS_DOT11_MODE_HT(session_entry->dot11mode) &&
             assoc_req->HTCaps.present && assoc_req->wmeInfoPresent)
@@ -9168,7 +9173,11 @@ static void
     tHalBitVal qos_mode;
     tHalBitVal wsm_mode, wme_mode;
     tpPESession session_entry = limIsApSessionActive(pmac);
-
+    if (session_entry == NULL)
+    {
+        limLog(pmac, LOGE, FL("Invalid Session Entry"));
+        return;
+    }
     limGetQosMode(session_entry, &qos_mode);
     sta_ds->qosMode    = eANI_BOOLEAN_FALSE;
     sta_ds->lleEnabled = eANI_BOOLEAN_FALSE;
