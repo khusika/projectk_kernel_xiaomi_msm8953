@@ -135,7 +135,7 @@ struct mmc_ext_csd {
 	u8			life_time_est_typ_a;    /* 268 */
 	u8			life_time_est_typ_b;    /* 269 */
 	u8			pre_eol_info;		/* 267 */
-#ifdef CONFIG_MACH_XIAOMI_TISSOT
+#ifdef CONFIG_MACH_XIAOMI_MSM8953
 	u8			device_life_time_est_typ_a;	/* 268 */
 	u8			device_life_time_est_typ_b;	/* 269 */
 #endif
