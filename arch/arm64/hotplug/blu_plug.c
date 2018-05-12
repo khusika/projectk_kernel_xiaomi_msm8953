@@ -117,7 +117,7 @@ static inline void down_one(void)
 
 	for_each_online_cpu(cpu) {
 		unsigned int thres = plug_threshold[cpu];
-		
+
 		if (!cpu || thres == p_thres) {
 			p_thres = thres;
 			p_cpu = cpu;
@@ -127,7 +127,7 @@ static inline void down_one(void)
 			p_cpu = cpu;
 			all_equal = false;
 		}
-		
+
 		if (cpu) {
 			unsigned int cur = cpufreq_quick_get(cpu);
 
@@ -159,18 +159,18 @@ static __ref void load_timer(struct work_struct *work)
 {
 	unsigned int cpu;
 	unsigned int avg_load = 0;
-	
+
 	if (down_timer < down_timer_cnt)
 		down_timer++;
 
 	if (up_timer < up_timer_cnt)
 		up_timer++;
-	
+
 	for_each_online_cpu(cpu)
 		avg_load += cpufreq_quick_get(cpu);
-		
+
 	avg_load /= num_online_cpus();
-	
+
 #if DEBUG
 	pr_debug("%s: avg_load: %u, num_online_cpus: %u\n", __func__, avg_load, num_online_cpus());
 	pr_debug("%s: up_timer: %u, down_timer: %u\n", __func__, up_timer, down_timer);
@@ -184,7 +184,7 @@ static __ref void load_timer(struct work_struct *work)
 	queue_delayed_work_on(0, dyn_workq, &dyn_work, delay);
 }
 
-/* 
+/*
  * Manages driver behavior on screenoff mode
  * It sets max online CPUs to max_cores_screenoff and freq to max_freq_screenoff
  * Restores previous values on resume work
@@ -193,15 +193,15 @@ static __ref void load_timer(struct work_struct *work)
 static __ref void max_screenoff(bool screenoff)
 {
 	uint32_t cpu, freq;
-	
+
 	if (screenoff) {
 		max_freq_plug = cpufreq_quick_get_max(0);
 		freq = min(max_freq_screenoff, max_freq_plug);
 
 		cancel_delayed_work_sync(&dyn_work);
-		
+
 		for_each_possible_cpu(cpu) {
-			
+
 			if (cpu && num_online_cpus() > max_cores_screenoff)
 				cpu_down(cpu);
 		}
@@ -209,15 +209,15 @@ static __ref void max_screenoff(bool screenoff)
 	}
 	else {
 		freq = max_freq_plug;
-		
+
 		up_all();
-		
+
 		for_each_possible_cpu(cpu)
 		cpufreq_update_policy(cpu);
-		
+
 		queue_delayed_work_on(0, dyn_workq, &dyn_work, delay);
 	}
-	
+
 #if DEBUG
 	pr_debug("%s: num_online_cpus: %u, freq_online_cpus: %u\n", __func__, num_online_cpus(), freq);
 #endif
@@ -225,7 +225,7 @@ static __ref void max_screenoff(bool screenoff)
 
 /* On suspend put offline all cores except cpu0*/
 static void dyn_lcd_suspend(struct work_struct *work)
-{	
+{
 	max_screenoff(true);
 }
 
@@ -299,11 +299,11 @@ static __ref int set_min_online(const char *val, const struct kernel_param *kp)
 		return -EINVAL;
 
 	ret = param_set_uint(val, kp);
-	
+
 	if (ret == 0) {
 			up_all();
 	}
-	
+
 	return ret;
 }
 
@@ -327,12 +327,12 @@ static __ref int set_max_online(const char *val, const struct kernel_param *kp)
 		return -EINVAL;
 
 	ret = param_set_uint(val, kp);
-	
+
 	if (ret == 0) {
 		down_all();
 		up_all();
 	}
-	
+
 	return ret;
 }
 
@@ -358,12 +358,12 @@ static __ref int set_max_cores_screenoff(const char *val, const struct kernel_pa
 		max_cores_screenoff = max_online;
 
 	ret = param_set_uint(val, kp);
-	
+
 	if (ret == 0) {
 		down_all();
 		up_all();
 	}
-	
+
 	return ret;
 }
 
@@ -387,7 +387,7 @@ static int set_max_freq_screenoff(const char *val, const struct kernel_param *kp
 		return -EINVAL;
 
 	ret = param_set_uint(val, kp);
-	
+
 	return ret;
 }
 
@@ -409,12 +409,12 @@ static int set_down_timer_cnt(const char *val, const struct kernel_param *kp)
 		return -EINVAL;
 	if (i < 1 || i > 50)
 		return -EINVAL;
-		
+
 	if (i < up_timer_cnt)
 		down_timer_cnt = up_timer_cnt;
 
 	ret = param_set_uint(val, kp);
-	
+
 	return ret;
 }
 
@@ -462,7 +462,7 @@ static int dyn_hp_init(void)
 	notify.notifier_call = fb_notifier_callback;
 	if (fb_register_client(&notify) != 0)
 		pr_info("%s: Failed to register FB notifier callback\n", __func__);
-	
+
 	dyn_workq = alloc_workqueue("dyn_hotplug_workqueue", WQ_HIGHPRI | WQ_FREEZABLE, 0);
 	if (!dyn_workq)
 		return -ENOMEM;
@@ -482,7 +482,7 @@ static void dyn_hp_exit(void)
 	cancel_delayed_work_sync(&dyn_work);
 	fb_unregister_client(&notify);
 	destroy_workqueue(dyn_workq);
-	
+
 	pr_info("%s: deactivated\n", __func__);
 }
 
@@ -499,15 +499,15 @@ static int set_enabled(const char *val, const struct kernel_param *kp)
 		return -EINVAL;
 	if (i < 0 || i > 1)
 		return 0;
-		
+
 	if (i == blu_plug_enabled)
 		return i;
 
 	ret = param_set_uint(val, kp);
 	blu_plug_enabled = i;
-	if ((blu_plug_enabled == 1))
+	if (blu_plug_enabled == 1)
 		blu = dyn_hp_init();
-	if ((blu_plug_enabled == 0))
+	if (blu_plug_enabled == 0)
 		dyn_hp_exit();
 	return i;
 }
