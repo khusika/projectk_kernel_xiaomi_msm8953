@@ -29,10 +29,6 @@
 #include <linux/of.h>
 #include <trace/events/power.h>
 
-#ifndef CONFIG_CPU_FREQ_MSM_OVERCLOCK_MSM8953
-static const unsigned long arg_cpu_max_c1 = 2016000;
-#endif
-
 static DEFINE_MUTEX(l2bw_lock);
 
 static struct clk *cpu_clk[NR_CPUS];
@@ -436,14 +432,6 @@ static struct cpufreq_frequency_table *cpufreq_parse_dt(struct device *dev,
 		 */
 		if (i > 0 && f <= ftbl[i-1].frequency)
 			break;
-
-#ifndef CONFIG_CPU_FREQ_MSM_OVERCLOCK_MSM8953
-                //Custom max freq
-		if (f > arg_cpu_max_c1) {
-			nf = i;
-			break;
-		}
-#endif
 
 		ftbl[i].driver_data = i;
 		ftbl[i].frequency = f;
