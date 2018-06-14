@@ -6142,10 +6142,18 @@ static void WLANTL_CacheEapol(WLANTL_CbType* pTLCb, vos_pkt_t* vosTempBuff)
 static void WLANTL_SampleRxRSSI(WLANTL_CbType* pTLCb, void * pBDHeader,
                                 uint8_t sta_id)
 {
-   WLANTL_STAClientType *pClientSTA = pTLCb->atlSTAClients[sta_id];
-   uint8_t count = pClientSTA->rssi_sample_cnt;
-   uint8_t old_idx = pClientSTA->rssi_stale_idx;
+   uint8_t count;
+   uint8_t old_idx;
    s8 curr_RSSI, curr_RSSI0, curr_RSSI1;
+   WLANTL_STAClientType *pClientSTA = pTLCb->atlSTAClients[sta_id];
+
+   if(pClientSTA == NULL) {
+      TLLOGE(VOS_TRACE( VOS_MODULE_ID_TL, VOS_TRACE_LEVEL_ERROR,
+      " %s: pClientSTA is NULL", __func__));
+      return;
+   }
+   count = pClientSTA->rssi_sample_cnt;
+   old_idx = pClientSTA->rssi_stale_idx;
 
    curr_RSSI0 = WLANTL_GETRSSI0(pBDHeader);
    curr_RSSI1 = WLANTL_GETRSSI1(pBDHeader);
@@ -8749,7 +8757,7 @@ WLANTL_STATxAuth
 
   /* This code is to send traffic with lower priority AC when we does not 
      get admitted to send it. Today HAL does not downgrade AC so this code 
-     does not get executed.(In other words, HAL doesn\92t change tid. The if 
+     does not get executed.(In other words, HAL doesn’t change tid. The if 
      statement is always false.)
      NOTE: In the case of LA downgrade occurs in HDD (that was the change 
      Phani made during WMM-AC plugfest). If WM & BMP also took this approach, 
