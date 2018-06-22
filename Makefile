@@ -618,16 +618,14 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, int-in-bool-context)
 KBUILD_CFLAGS	+= $(call cc-option,-fno-PIE)
 KBUILD_AFLAGS	+= $(call cc-option,-fno-PIE)
-KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS	+= $(call cc-option,-Oz,-Os)
-KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
+KBUILD_CFLAGS	+= $(call cc-option,-Oz,-Os) $(call cc-disable-warning,maybe-uninitialized,)
 else
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS	+= -O3
 else
-KBUILD_CFLAGS	+= -O2 -finline-functions
+KBUILD_CFLAGS	+= -O2
 endif
 endif
 
@@ -637,9 +635,6 @@ endif
 
 # Tell gcc to never replace conditional load with a non-conditional one
 KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
-
-# Needed to unbreak GCC 7.x and above
-KBUILD_CFLAGS   += $(call cc-option,-fno-store-merging,)
 
 ifdef CONFIG_READABLE_ASM
 # Disable optimizations that make assembler listings hard to read.
@@ -1313,8 +1308,8 @@ help:
 	@echo  '                    (default: $$(INSTALL_MOD_PATH)/lib/firmware)'
 	@echo  '  dir/            - Build all files in dir and below'
 	@echo  '  dir/file.[oisS] - Build specified target only'
-	@echo  '  dir/file.ll     - Build the LLVM bitcode file'
-	@echo  '                    (requires compiler support for LLVM bitcode generation)'
+	@echo  '  dir/file.ll     - Build the LLVM assembly file'
+	@echo  '                    (requires compiler support for LLVM assembly generation)'
 	@echo  '  dir/file.lst    - Build specified mixed source/assembly target only'
 	@echo  '                    (requires a recent binutils and recent build (System.map))'
 	@echo  '  dir/file.ko     - Build module including final link'
@@ -1488,6 +1483,7 @@ clean: $(clean-dirs)
 		-o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \
 		-o -name '*.symtypes' -o -name 'modules.order' \
 		-o -name modules.builtin -o -name '.tmp_*.o.*' \
+		-o -name '*.ll' \
 		-o -name '*.gcno' \) -type f -print | xargs rm -f
 
 # Generate tags for editors
