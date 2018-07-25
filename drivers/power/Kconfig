@@ -636,12 +636,6 @@ config MSM_BCL_PERIPHERAL_CTL
 	  provides routines to configure and monitor the BCL
 	  PMIC peripheral.
 
-config MSM_BCL_SOMC_CTL
-	bool "BCL driver to control with new condition"
-	depends on BATTERY_BCL
-	help
-	  Say Y here to enable new condition.
-
 config QNS_SYSTEM
 	bool "Qnovo QNS wrapper implementation"
 	default n
