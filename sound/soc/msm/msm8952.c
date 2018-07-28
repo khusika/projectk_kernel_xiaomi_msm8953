@@ -1689,6 +1689,7 @@ static void *def_msm8952_wcd_mbhc_cal(void)
 	btn_high[4] = 500;
 #endif
 #endif
+#endif
 	return msm8952_wcd_cal;
 }
 

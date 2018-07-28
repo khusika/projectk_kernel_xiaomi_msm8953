@@ -384,6 +384,7 @@ out_micb_en:
 #else
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_CS);
 #endif
+#endif
 		 }
 
 		/* configure cap settings properly when micbias is disabled */
@@ -420,6 +421,7 @@ out_micb_en:
 #else
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_CS);
 #endif
+#endif
 		mutex_unlock(&mbhc->hphl_pa_lock);
 		break;
 	case WCD_EVENT_PRE_HPHR_PA_OFF:
@@ -447,6 +449,7 @@ out_micb_en:
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_MB);
 #else
 			wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_CS);
+#endif
 #endif
 		mutex_unlock(&mbhc->hphr_pa_lock);
 		break;

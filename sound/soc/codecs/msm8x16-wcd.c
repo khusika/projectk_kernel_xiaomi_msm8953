@@ -109,6 +109,7 @@ enum {
 #else
 #define MICBIAS_DEFAULT_VAL 1800000
 #endif
+#endif
 #define MICBIAS_MIN_VAL 1600000
 #define MICBIAS_STEP_SIZE 50000
 
