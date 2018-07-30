@@ -40,17 +40,12 @@
 #include <linux/ktime.h>
 #include <linux/pmic-voter.h>
 
-#ifdef CONFIG_FORCE_FAST_CHARGE
-#include <linux/fastchg.h>
-#endif
-
 /* Mask/Bit helpers */
 #define _SMB_MASK(BITS, POS) \
 	((unsigned char)(((1 << (BITS)) - 1) << (POS)))
 #define SMB_MASK(LEFT_BIT_POS, RIGHT_BIT_POS) \
 		_SMB_MASK((LEFT_BIT_POS) - (RIGHT_BIT_POS) + 1, \
 				(RIGHT_BIT_POS))
-
 /* Config registers */
 struct smbchg_regulator {
 	struct regulator_desc	rdesc;
@@ -444,11 +439,7 @@ module_param_named(
 	int, S_IRUSR | S_IWUSR
 );
 
-#ifdef CONFIG_FORCE_FAST_CHARGE
-static int smbchg_default_hvdcp_icl_ma = 2000;
-#else
 static int smbchg_default_hvdcp_icl_ma = 1800;
-#endif
 module_param_named(
 	default_hvdcp_icl_ma, smbchg_default_hvdcp_icl_ma,
 	int, S_IRUSR | S_IWUSR
@@ -460,11 +451,7 @@ module_param_named(
 	int, S_IRUSR | S_IWUSR
 );
 
-#ifdef CONFIG_FORCE_FAST_CHARGE
-static int smbchg_default_dcp_icl_ma = 2000;
-#else
 static int smbchg_default_dcp_icl_ma = 1800;
-#endif
 module_param_named(
 	default_dcp_icl_ma, smbchg_default_dcp_icl_ma,
 	int, S_IRUSR | S_IWUSR
@@ -1403,8 +1390,6 @@ static int dc_ilim_ma_table_8996[] = {
 	2200,
 	2300,
 	2400,
-	2500,
-	2600,
 };
 
 static const int fcc_comp_table_8994[] = {
@@ -1419,11 +1404,6 @@ static const int fcc_comp_table_8996[] = {
 	1100,
 	1200,
 	1500,
-	1600,
-	1800,
-	2000,
-	2500,
-	2600,
 };
 
 static const int aicl_rerun_period[] = {
@@ -1804,11 +1784,7 @@ static int smbchg_set_usb_current_max(struct smbchg_chip *chip,
 			}
 			chip->usb_max_current_ma = 500;
 		}
-#ifdef CONFIG_FORCE_FAST_CHARGE
-		if ((force_fast_charge > 0 && current_ma == CURRENT_500_MA) || current_ma == CURRENT_900_MA) {
-#else
 		if (current_ma == CURRENT_900_MA) {
-#endif
 			rc = smbchg_sec_masked_write(chip,
 					chip->usb_chgpth_base + CHGPTH_CFG,
 					CFG_USB_2_3_SEL_BIT, CFG_USB_3);
