@@ -891,8 +891,6 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
        set_power_suspend_state_panel_hook(POWER_SUSPEND_INACTIVE);
 #endif
 
-	display_on = true;
-
 	pinfo = &pdata->panel_info;
 	ctrl = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
