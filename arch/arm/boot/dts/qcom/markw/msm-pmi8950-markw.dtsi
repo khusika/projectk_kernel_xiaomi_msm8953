@@ -1,0 +1,81 @@
+/* Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <dt-bindings/msm/power-on.h>
+
+&spmi_bus {
+
+	qcom,pmi8950@2 {
+		qcom,power-on@800 {
+			compatible = "qcom,qpnp-power-on";
+			reg = <0x800 0x100>;
+			qcom,secondary-pon-reset;
+			qcom,hard-reset-poweroff-type =
+				<PON_POWER_OFF_SHUTDOWN>;
+
+			pon_perph_reg: qcom,pon_perph_reg {
+				regulator-name = "pon_spare_reg";
+				qcom,pon-spare-reg-addr = <0x8c>;
+				qcom,pon-spare-reg-bit = <1>;
+			};
+		};
+
+		pmi8950_charger: qcom,qpnp-smbcharger {
+			/delete-property/ qcom,float-voltage-mv;
+			/delete-property/ qcom,thermal-mitigation;
+			/delete-property/ qcom,parallel-usb-min-current-ma;
+			/delete-property/ qcom,parallel-usb-9v-min-current-ma;
+			/delete-property/ qcom,parallel-allowed-lowering-ma;
+		};
+
+		pmi8950_fg: qcom,fg {
+			qcom,resume-soc = <99>;
+		};
+	};
+
+	qcom,pmi8950@3 {
+		flash_led: qcom,leds@d300 {
+
+			pmi8950_flash0: qcom,flash_0 {
+				qcom,current = <750>;
+			};
+
+			pmi8950_flash1: qcom,flash_1 {
+				qcom,current = <750>;
+			};
+
+			pmi8950_torch0: qcom,torch_0 {
+				qcom,current = <100>;
+			};
+
+			pmi8950_torch1: qcom,torch_1 {
+				qcom,current = <100>;
+			};
+
+			pmi8950_torch2: qcom,torch_2 {
+				label = "torch";
+				qcom,led-name = "flashlight";
+				qcom,default-led-trigger =
+						"torch2_trigger";
+				qcom,max-current = <200>;
+				qcom,id = <1>;
+				qcom,current = <100>;
+			};
+
+			pmi8950_switch: qcom,switch {
+				reg0 {
+					regulator-name = "pon_spare_reg";
+				};
+			};
+		};
+	};
+};
