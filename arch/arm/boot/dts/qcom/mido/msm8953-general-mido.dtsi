@@ -520,13 +520,3 @@
 &wcd9xxx_intc {
 	status = "disabled";
 };
-
-&firmware {
-	android {
-		fstab {
-			vendor {
-				dev = "/dev/block/platform/soc/7824900.sdhci/by-name/cust";
-			};
-		};
-	};
-};
